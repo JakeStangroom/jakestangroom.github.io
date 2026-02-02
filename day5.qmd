@@ -1,2 +1,0 @@
-# Day Five: Displaying data {#sec-day5 .unnumbered}
-
