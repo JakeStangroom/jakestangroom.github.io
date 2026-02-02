@@ -1,0 +1,41 @@
+# `projrsimple` {#sec-day1-projrsimple}
+
+I've written a simple package to help you:
+
+- initialise your projects (directories, Git, GitHub and a README), and
+- build your projects (Quarto, R Markdown, and R scripts) in a clean and easy way.
+
+There are only two functions in this package:
+
+- `projr_init`: Initialises a project with relevant directories, Git and GitHub.
+- `projr_run`: Runs all scripts in the project (`.R`, `.Rmd`, `.qmd` or `Quarto` projects).
+
+What problems does it help solve?
+
+- Avoiding having to remember the commands to initialise a project.
+- Running all the scripts in a project in the correct order.
+- Copies all rendered documents to a `docs` directory.
+- (Optionally) ensuring a clean `output` directory before running the scripts.
+
+
+## Installation
+
+You can install the package from GitHub using the following code:
+
+```r
+if (!requireNamespace("remotes", quietly = TRUE)) {
+  install.packages("remotes")
+}
+remotes::install_github("MiguelRodo/projrsimple")
+```
+
+## Usage
+
+1. Install `projrsimple` (see above).
+2. Open an R session in your project directory (folder where you want to work).
+3. Run `projr_init()` to initialise your project (set up Git, GitHub, project directories and a README; simpler than the other instructions for doing this).
+4. Write code in scripts (`.R`, `.Rmd`, `.qmd` and/or Quarto projects) in the project directory.
+5. Run `projr_run` to execute all scripts. Within those scripts, save outputs to `_output` directory.
+6. View rendered documents in the `docs` directory.
+
+See the package website for more information: [projrsimple](https://miguelrodo.github.io/projrsimple/).

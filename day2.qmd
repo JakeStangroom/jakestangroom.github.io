@@ -1,0 +1,10 @@
+# Day 2: More on R Programming {#sec-day2 .unnumbered}
+
+## What Will We Cover by the End of Day One?
+
+-   Focus on basic coding in R
+-   Understand basic best practices
+
+## What is the outcome for today?
+
+Compile practicals into your running Quarto project.

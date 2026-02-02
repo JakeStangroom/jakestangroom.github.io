@@ -1,0 +1,164 @@
+# Variable Assignment {#sec-day2-assign}
+
+In the [previous chapter](@sec-day1-r), we discussed the assignment of variables in the most basic way. That is, you can assign a value to a variable by using either of the operators `<-` or `=`, whereby the `<-` operator is preferred. This is not quite complete.
+
+1.  There are more assignment operators
+
+2.  They are not all *truly* equivalent
+
+*Tip: you can press `Alt`* + `-` *to get `<-`* *when in a code chunk or r-script.*
+
+## Assignment Operators
+
+Whilst the operators: `<-`, `=` are definitely the most common assignment operators in *R*, `<<-` , `->`, and `->>` are also valid assignment operators. Therefore, the following will all achieve the same result, the number 3 will be stored to the appropriate variable:
+
+```{r}
+a <- 3
+b = 3
+d <<- 3
+3 -> e
+3 ->> f
+
+print(a)
+print(b)
+print(d)
+print(e)
+print(f)
+```
+
+Where the problem arises is with functions and a notion called *scope*.
+
+### What is scope?
+
+Without getting too technical, when we assign a variable to a value there is a block of memory which gets allocated to store the information of that variable. For example, when we assign `a <- 3`, there is a small bit (48 bytes) of memory which is allocated to the variable `a`. That means that when `a` is referenced, *R* knows to go look at that memory which shows that the value of the variable is `3`. This memory allocation is not necessarily persistent.
+
+When we assign a variable in general, then the memory allocation will remain there until we explicitly remove it; however, when we call a function, that is **not** necessarily true. For example, consider the following code chunk:
+
+```{r, eval=FALSE}
+f <- function(input){
+  localVar <- input
+  return(localVar)
+}
+
+print(localVar)
+```
+
+The function assigns the `input` to a variable, `localVar` but the `print(localVar)` line will produce an error. This is because the memory allocation for `localVar` is only assigned for the use of the function. Once the function returns, then that memory allocation is freed up once more. Therefore, we call the variable a *local variable* since it can realistically only be used within the function. A variable which is stored indefinitely is known as a *global variable.* The period for which the variable is allocated can be loosely termed as its scope.
+
+### Where is the problem?
+
+Now let us break the function. Firstly, let us clear all variables which have been assigned previously, and then reassign the same function above.
+
+1.  Option One:
+
+    Firstly, we can choose to call the function with the `=` operator. Then `f(input = 3)` will return `3` as expected. However, the line `print(input)` will cause an error. This is because `=` only allocated as a local variable.
+
+```{r}
+rm(list = ls())
+
+f <- function(input){
+  localVar <- input
+  return(localVar)
+}
+```
+
+```{r, eval=FALSE}
+(f(input = 3))
+print(input)
+```
+
+2.  Option Two:
+
+    Alternatively, we could call the function as follows. This will return the same value for the function call **AND** allow the print command. This is because `input` is assigned as a global variable in the function call.
+
+```{r}
+(f(input <- 3))
+print(input)
+```
+
+**Option one is best practice for coding**. Using option 2 can make code fairly difficult to keep track of. Consider the following example:
+
+```{r}
+g <- function(a){
+  a <- a * 3
+  return(a)
+}
+
+g(a <- 2)
+print(a)
+
+```
+
+The function will return a value of `6` as expected, but the global variable will still be stored as `2`. This is because any changes made to the variable in the function are actually made to a local variable copy of `a` and not on `a` itself.
+
+### What about the `<<-` operator?
+
+Clearly, when using functions, one needs to be careful of global and local variables. Essentially, when a function is called, any variable is either a global variable (defined outside the function and visible to everything) or a locally defined variable (in the sense that we define a new variable inside the function).
+
+Unintended issues can arise however, when trying to make changes to one of these global variables; only a copy of the actual global variable is used inside of a function scope. The operator `<<-` can get around this.
+
+```{r local and global variables, eval=FALSE}
+
+g <- function(){
+  globalVariable <- 1
+  return(globalVariable)
+}
+(g())
+print(globalVariable)
+
+```
+
+This code fails because `globalVariable` is only a local variable definition inside the function.
+
+```{r}
+g <- function(){
+  globalVariable <<- 1
+  return(globalVariable)
+}
+(g())
+print(globalVariable)
+
+```
+
+The `<<-` operator is a global assignment operator, bypassing the locality of function, as seen in the following extract.
+
+Note: it can be beneficial to provide a small description of the functions you write as follows.
+
+```{r}
+aVariable <- 100
+
+h <- function(b){
+  # A function to help show local variables are separate from global variables
+  # 
+  # Args:
+  #   b (double) - multiplies 'aVariable'
+  # 
+  # Return:
+  #   (double) - updated 'aVariable'??
+  
+  aVariable <- aVariable * b
+  
+  return(aVariable)
+}
+
+
+(h(b = 3))
+(aVariable)
+
+h <- function(b){
+  aVariable <<- aVariable * b
+  
+  return(aVariable)
+}
+
+
+(h(b = 3))
+(aVariable)
+
+```
+
+## TL;DR
+
+1.  Use `<-` for normal variable assignment
+2.  Use `=` when making a function call, for example: `f(a = 3)`.
+3.  Avoid `<<-` unless you are very sure!

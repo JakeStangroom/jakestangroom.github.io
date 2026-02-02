@@ -1,0 +1,24 @@
+# Welcome {.unnumbered}
+
+We have a lot to cover in this bootcamp-style course. By the end, you should be able to **write acceptable assignments faster**. One of the biggest time sinks in Honours statistics is the process of writing up your analyses, which is often slowed down by two major issues:
+
+1.  Poor structure in R files and projects.
+2.  Slowness in reading and writing R code.
+
+Our goal is to address both of these challenges. This course focuses on statistical computing, so many tasks will be statistical in nature.
+
+## What About Marks?
+
+-   **Peer-reviewed assessment:**
+    -   Dates: 9 February, 23 February
+    -   Format:
+        -   Collate selected practical work from the first two weeks into a Quarto project, with the code available on GitHub (Quarto and GitHub to be explained later).
+        -   You will each anonymously mark one other person's work.
+        -   We will provide a marking rubric.
+-   **Practical tests:**
+    -   Test One: 12 February, 9–11 AM.
+    -   Test Two: 6 March, 9-11 AM.
+-   **Lab Exam**
+    -   June
+
+*These notes are adapted from those written by Miguel Rodo and still make some references to optional videos produced by him.*
