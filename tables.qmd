@@ -1,0 +1,162 @@
+# Tables {#sec-day5-tables}
+
+When it comes to tables in academic writing or reports, clear and consistent formatting is essential.
+
+## General Guidelines
+
+- **Table Styling:**
+
+  - **Avoid Vertical Lines:**
+    Most good style guides recommend that tables do not include vertical lines. Horizontal lines should typically only appear above and below the header row and at the bottom of the table.
+  - **Minimal Horizontal Lines:**
+    Use only as many horizontal lines as necessary to separate the header from the data.
+  - **Rounding and Significant Figures:**
+    Present numerical data with a limited, preferrably consistent number of decimal/significant places (usually 2 or 3) to enhance readability. Use a functions like or `round()` or `signif()`.
+  - **Headings**:
+    Headings should consistently be either title or sentence case, and should not contain punctuation or programming syntax/formatting (e.g. `Participant_ID`). Headings can be bold or not, but should be consistent throughout the document.
+
+- **Captions and Cross-Referencing:**
+
+  Every table should have a concise caption that includes a title and a descriptive sentence. Abbreviations or symbols used within the table must be defined in the caption. In Quarto, assign a label (e.g., `tab-summary`) so that you can cross-reference the table in your text with `@tab-summary`.
+  _Note:_ All tables should be referenced in your text before they appear.
+
+- **Self-contained:**:
+  
+  Tables should be self-contained in the sense that the reader can understand the table without refering to the main text.
+  This is achieved by including a caption that has an informative detail, uses sentences to describe any important details, and closes with abbreviations or symbols used in the table.
+
+## Generating a table from `R`
+
+Typically, it is convenient to create the table in `R` in the relevant output format.
+
+To run the following code, attach the following packages:
+
+```{r}
+#| results: hide
+#| warning: false
+#| message: false
+pkg_vec <- c("dplyr", "palmerpenguins", "knitr")
+for (x in pkg_vec) {
+  if (!requireNamespace(x, quietly = TRUE)) {
+    install.packages(x, dependencies = TRUE)
+  }
+  # if you want to programmatically attach
+  # libraries, this is the way to to do it
+  library(x, character.only = TRUE)
+}
+```
+
+### Computed table
+
+```{r}
+#| echo: fenced
+#| results: asis
+# Create a summary table of key statistics by species
+penguin_summary <- penguins |>
+  group_by(species) |>
+  summarise(
+    `Flipper length` = round(mean(flipper_length_mm, na.rm = TRUE), 2),
+    `Body Mass` = round(mean(body_mass_g, na.rm = TRUE), 2),
+    Count = n(),
+    .groups = "drop"
+  ) |>
+  rename(Species = species)
+
+# Display the table using knitr::kable
+kable(
+  penguin_summary,
+  caption = "Summary statistics for penguin easurements. Values are rounded to 2 decimal places. Abbreviations: FL = Flipper Length (mm), BM = Body Mass (g)."
+)
+```
+
+- The column names were formatted using `dplyr`.
+- The table styling (no vertical lines, placement of horizontal lines, bold headings) was set using `knitr::kable()`.
+- The table caption was set using `knitr::kable()` as well.
+- Note that the `results: asis` chunk option is *essential* to this displaying correctly.
+
+### Copied into a Quarto document
+
+I find getting labels and cross-referencing to work well when directly computing the table is a bit tricky.
+
+So, I prefer to do the following:
+
+1. Run the code to compute the table in the `R` console.
+
+In the example above, that means running the `kable()` call.
+Depending on your desired output format, you will get Markdown or LaTeX output (typically).
+Here is what the Markdown output looks like, running the following code:
+
+```{r}
+#| eval: false
+kable(penguin_summary)
+```
+
+```plaintext
+|Species   |   FL   |   BM    | Count |
+|:---------|:------:|:-------:|:-----:|
+|Adelie    | 189.95 | 3700.66 |  152  |
+|Chinstrap | 195.82 | 3733.09 |  68   |
+|Gentoo    | 217.19 | 5076.02 |  124  |
+```
+
+2. Copy the output into your Quarto document.
+
+3. If you are working within Quarto, then you can use the Quarto cross-referencing syntax (details [here](https://quarto.org/docs/authoring/cross-references.html)), which looks like this:
+
+```markdown
+::: {#tbl-summary}
+
+|Species   |   FL   |   BM    | Count |
+|:---------|:------:|:-------:|:-----:|
+|Adelie    | 189.95 | 3700.66 |  152  |
+|Chinstrap | 195.82 | 3733.09 |  68   |
+|Gentoo    | 217.19 | 5076.02 |  124  |
+
+Summary statistics for penguin easurements. Values are rounded to 2 decimal places. Abbreviations: FL = Flipper Length (mm), BM = Body Mass (g).
+
+:::
+```
+
+and produces this, which can be cross referenced (`@tbl-summary` produces @tbl-summary):
+
+::: {#tbl-summary}
+
+|Species   |   FL   |   BM    | Count |
+|:---------|:------:|:-------:|:-----:|
+|Adelie    | 189.95 | 3700.66 |  152  |
+|Chinstrap | 195.82 | 3733.09 |  68   |
+|Gentoo    | 217.19 | 5076.02 |  124  |
+
+Summary statistics for penguin easurements. Values are rounded to 2 decimal places. Abbreviations: FL = Flipper Length (mm), BM = Body Mass (g).
+
+:::
+
+- Key elements of Quarto table cross-referencing syntax:
+  - Opening line:
+    - Begin with `:::`
+    - Open curly braces
+    - Write label:
+      - Demarcate it with `#`
+      - No spaces between `#` and label
+      - Label begins with `tbl-`.
+      - Write remainder of label
+      - Close curly braces
+  - Place table content (copied from previous line)
+  - Write caption
+  - Close with `:::`
+  - To cross-reference, write `@<label>` where `<label>` is the part immediately following the `#` in the opening of the `:::` block and *includes* the `tbl-` prefix.
+
+4. Reference the table using the syntax `@<label>`, where `<label>` is the part immediately following the `#` in the opening of the `:::` block: `@tbl-summary` produces @tbl-summary.
+
+### `LaTeX` 
+
+Using `LaTeX`: If you are using `LaTex` (e.g. working in OverLeaf, which you cover in the `LaTeX` lecture later this week), then you would run the `knitr::kable` command with `format = "latex"`.
+This will give you a LaTeX table that you can copy into your document.
+You can then use `LaTeX`-specific labelling and cross-referencing syntax to reference the table (not covered here).
+
+But the basic idea of using `R` to generate the table contents and overall styling, and then using your document format's specific syntax for labelling and cross-referencing, remains the same.
+
+This approach is *much* easier than writing out the contents of the table by hand (though manual editing may still be necessary for fine-tuning, e.g. for formatting).
+
+There are many other `R` packages than `knitr` with the `kable` function that can generate formatted tables from `R` objects (e.g. `pandoc`, `gt`), so you can choose the one that best fits your needs.
+`knitr::kable`'s advantage is simplicity.

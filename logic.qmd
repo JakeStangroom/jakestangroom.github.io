@@ -1,0 +1,60 @@
+# Logical Operators {#sec-logical}
+
+Logical operators are able to check whether certain conditions are `TRUE` or `FALSE`. The standard logical operators remain fairly consistent with other programs for operators such as `==`, `!=`, `<`, `<=`, `>`, `>=`; however, the `And` and `Or` operators are provided by `&` and `|` respectively. This could differ from previously learnt languages. `&&` and `||` are also logical operators available.
+
+As you might expect, there are subtle differences between these latter operators. To see the difference, consider `&` and `&&`.
+
+```{r}
+
+a <- c(1,2,5)
+b <- a
+
+HecticCalculation <- function(){
+  
+  print('I am doing a hectic calculation, I promise')
+  
+  return(T)
+}
+
+# Operator comparison
+
+if(all(a != b) & HecticCalculation()){
+  print('I should be unreachable, first condition false')
+}
+```
+
+```{r}
+
+if(all(a != b) && HecticCalculation()){
+  print('I should be unreachable, first condition false')
+}
+
+```
+
+```{r}
+if(all(a == b) && HecticCalculation()){
+  print('I can run.')
+}
+
+```
+
+The first `if` statement runs the *hectic calculation* because it checks **both** of the conditions on either side of it!
+
+The `&&` does **not** run the hectic calculation for the second `if` statement because the first condition fails (it prints nothing). For final `if` statement runs the *hectic calculation*, since the first condition passed, therefore the second condition is checked.
+
+This type of logical behaviour can be very useful when dealing with difficult computations if used effectively, avoiding unnecessary function calls. The same can be achieved with `||`.
+
+In the above code, we have used the `if` statement which runs code *if* a condition is met. With this, we have the `else` and `if else` statements. They generally follow a structure like this:
+
+```{r}
+aCondition = F
+anotherCondition = T
+
+if (aCondition){
+  "Check original condition"
+}else if (anotherCondition){
+  "Check another condition IF `aCondition` is false"
+}else {
+  "If all of the above are false, then do this"
+}
+```
